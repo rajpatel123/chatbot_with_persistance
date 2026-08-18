@@ -202,6 +202,36 @@ llm = ChatOpenAI(
 )
 
 
+def log_tokens(ai_message):
+     # =============================================
+            # Token Usage — per turn
+            # =============================================
+
+            usage = getattr(ai_message, "usage_metadata", None)
+
+            if usage:
+
+                input_tok = usage.get("input_tokens", 0)
+                output_tok = usage.get("output_tokens", 0)
+                total_tok = usage.get("total_tokens", 0)
+
+                # cache_read = (
+                #     usage.get("input_token_details", {})
+                #     .get("cache_read", 0)
+                # )
+
+                # reasoning_tok = (
+                #     usage.get("output_token_details", {})
+                #     .get("reasoning", 0)
+                # )
+
+                st.caption(
+                    f"🔢 Tokens — Input: `{input_tok}` | "
+                    f"Output: `{output_tok}` | "
+                    f"Total: `{total_tok}` | "
+                   # f"Cached: `{cache_read}` | "
+                   # f"Reasoning: `{reasoning_tok}`"
+                )
 # =========================================================
 # Chatbot Node
 # =========================================================
@@ -212,6 +242,8 @@ def chatbot(state: State) -> State:
         state["messages"]
     )
 
+
+    log_tokens(response)
     return {
         "messages": [
             response
@@ -286,6 +318,7 @@ def load_chats():
             "created_at": row[2],
             "updated_at": row[3],
         }
+       
 
     return chats
 
